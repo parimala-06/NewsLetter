@@ -1,0 +1,329 @@
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=PT+Serif:wght@400;700&family=JetBrains+Mono:wght@400;500&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Theme tokens. Dark is the default (no attribute needed); ThemeToggle sets
+   data-theme="light" on <html> and persists the choice to localStorage. A
+   blocking inline script in layout.jsx applies the saved theme before first
+   paint so there's no flash of the wrong theme. Most brand gradients (ring
+   accents, gradient text) stay identical in both themes on purpose — only
+   --brand-gradient (solid-fill buttons and topic-name tags) gets a lighter
+   variant in light mode, since the deep 600-shade version reads as heavy
+   against the bright white card surfaces there. */
+:root {
+  color-scheme: dark;
+  --bg-base: #020207;
+  --glow-1: rgba(124, 58, 237, 0.38);
+  --glow-2: rgba(37, 99, 235, 0.32);
+  --glow-3: rgba(29, 78, 216, 0.24);
+  --glow-breathe: rgba(59, 130, 246, 0.3);
+  --brand-gradient: linear-gradient(90deg, #2563eb, #7c3aed);
+
+  --text-100: #f5f5f7;
+  --text-85: rgba(245, 245, 247, 0.85);
+  --text-80: rgba(245, 245, 247, 0.8);
+  --text-75: rgba(245, 245, 247, 0.75);
+  --text-70: rgba(245, 245, 247, 0.7);
+  --text-60: rgba(245, 245, 247, 0.6);
+  --text-50: rgba(245, 245, 247, 0.5);
+  --text-40: rgba(245, 245, 247, 0.4);
+  --text-30: rgba(245, 245, 247, 0.3);
+
+  --surface-5: rgba(255, 255, 255, 0.05);
+  --surface-8: rgba(255, 255, 255, 0.08);
+  --surface-10: rgba(255, 255, 255, 0.1);
+
+  --border-10: rgba(255, 255, 255, 0.1);
+  --border-15: rgba(255, 255, 255, 0.15);
+
+  --tag-pill-inner: #0c0820;
+  --card-fade: rgba(2, 2, 7, 0.4);
+  --pill-shadow: none;
+
+  --card-bg: linear-gradient(
+    160deg,
+    rgba(37, 99, 235, 0.1),
+    rgba(124, 58, 237, 0.09) 55%,
+    rgba(2, 2, 7, 0.4)
+  );
+  --card-shadow: 0 20px 60px -30px rgba(124, 58, 237, 0.55);
+  --card-border: var(--border-10);
+
+  /* Hero gradient text stops — light, saturated blues/violets read fine
+     against the near-black dark background. */
+  --grad-a: #60a5fa;
+  --grad-b: #7c3aed;
+  --grad-c: #a855f7;
+
+  --error-bg: rgba(244, 63, 94, 0.1);
+  --error-border: rgba(244, 63, 94, 0.2);
+  --error-text: #fecdd3;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg-base: #fbfaff;
+  --glow-1: rgba(124, 58, 237, 0.16);
+  --glow-2: rgba(37, 99, 235, 0.14);
+  --glow-3: rgba(29, 78, 216, 0.1);
+  --glow-breathe: rgba(59, 130, 246, 0.12);
+  --brand-gradient: linear-gradient(90deg, #3b82f6, #8b5cf6);
+
+  /* Near-black (not navy-gray) for maximum crispness on white — this is
+     the single biggest lever for a light theme reading as "bright and
+     legible" rather than washed out. Secondary/muted tiers stay dark-hued
+     too (never lightened toward gray) so small caption text keeps real
+     contrast instead of fading to illegible pale gray. */
+  --text-100: #0b0a12;
+  --text-85: rgba(11, 10, 18, 0.94);
+  --text-80: rgba(11, 10, 18, 0.9);
+  --text-75: rgba(11, 10, 18, 0.85);
+  --text-70: rgba(11, 10, 18, 0.78);
+  --text-60: rgba(11, 10, 18, 0.7);
+  --text-50: rgba(11, 10, 18, 0.62);
+  --text-40: rgba(11, 10, 18, 0.54);
+  --text-30: rgba(11, 10, 18, 0.44);
+
+  /* Buttons/pills sit as clean near-white surfaces on the tinted page
+     background, lifted with a soft shadow, instead of a dark tint blended
+     into a light page (which read as flat gray). */
+  --surface-5: #ffffff;
+  --surface-8: #ffffff;
+  --surface-10: #f3f0fc;
+
+  --border-10: rgba(11, 10, 18, 0.08);
+  --border-15: rgba(11, 10, 18, 0.12);
+
+  --tag-pill-inner: #ffffff;
+  --card-fade: rgba(255, 255, 255, 0.75);
+  --pill-shadow: 0 1px 2px rgba(17, 12, 34, 0.04), 0 4px 14px -4px rgba(17, 12, 34, 0.1);
+
+  /* Topic cards are a crisp white surface with a real shadow and a thin
+     gradient accent strip (painted by .topic-card::before) — a solid,
+     modern "elevated card" rather than the moody tinted wash used in dark
+     mode, which read as flat and low-contrast on a light page. */
+  --card-bg: #ffffff;
+  --card-shadow: 0 2px 4px rgba(17, 12, 34, 0.04), 0 20px 48px -24px rgba(37, 99, 235, 0.28);
+  --card-border: rgba(11, 10, 18, 0.06);
+
+  /* Deeper, more saturated stops so the headline stays clearly readable
+     against a light background instead of washing out. */
+  --grad-a: #1d4ed8;
+  --grad-b: #6d28d9;
+  --grad-c: #86198f;
+
+  --error-bg: rgba(225, 29, 72, 0.07);
+  --error-border: rgba(225, 29, 72, 0.25);
+  --error-text: #9f1239;
+}
+
+body {
+  background-color: var(--bg-base);
+  color: var(--text-100);
+}
+
+/* Thin gradient accent strip along the top edge of a topic card — the
+   brand touch that replaces dark mode's tinted card wash in light mode,
+   where the card body is instead a plain white surface (see --card-bg). */
+.topic-card {
+  position: relative;
+}
+
+.topic-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background-image: linear-gradient(90deg, #2563eb, #7c3aed, #a855f7);
+}
+
+/* Electric blue → purple gradient, used for hero headlines instead of a
+   flat accent color — kept off body copy so it never hurts legibility,
+   only display-sized text. No pink/cyan. Stops shift per theme (see
+   --grad-a/b/c) so the headline stays readable on both light and dark
+   backgrounds. */
+.gradient-text {
+  background-image: linear-gradient(90deg, var(--grad-a), var(--grad-b), var(--grad-c));
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+/* Pill/tag buttons: a plain subtle border at rest, a bright gradient ring
+   on hover or when active. Two layered backgrounds (inner solid fill +
+   outer gradient) clipped to padding-box/border-box respectively — this is
+   the standard way to get a gradient border that still respects
+   border-radius, since border-image doesn't. */
+.tag-pill {
+  background-color: var(--surface-8);
+  border: 1.5px solid var(--border-15);
+  color: var(--text-100);
+  box-shadow: var(--pill-shadow);
+  transition: border-color 200ms ease, background-image 200ms ease, box-shadow 200ms ease;
+}
+
+.tag-pill:hover,
+.tag-pill.is-active {
+  border-color: transparent;
+  background-image: linear-gradient(var(--tag-pill-inner), var(--tag-pill-inner)),
+    linear-gradient(90deg, #2563eb, #7c3aed, #a855f7);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  box-shadow: 0 4px 18px -6px rgba(124, 58, 237, 0.5);
+}
+
+/* Destructive variant (Unfollow): on hover, only the border goes red — no
+   gradient ring, no text color change, so it reads as a warning outline
+   rather than the usual brand-accent hover state. */
+.tag-pill.tag-pill-danger:hover {
+  border-color: rgba(244, 63, 94, 0.6);
+  background-image: none;
+  box-shadow: none;
+}
+
+/* Same gradient ring for cards, via a mask-based technique instead of the
+   background-clip trick above — a card's interior is a live photo, not a
+   solid fill, so the ring needs to stay fully transparent in the middle
+   (background-clip's padding-box/border-box layering can't do that; a
+   masked pseudo-element that only paints the border-width ring can). */
+.card-ring::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(90deg, #2563eb, #7c3aed, #a855f7);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+
+.group:hover .card-ring::before {
+  opacity: 1;
+}
+
+/* Breaking-news ticker bar — a thin strip of light sweeping across the very
+   top of the page, like a broadcast lower-third always mid-transmission. */
+.ticker-bar {
+  height: 3px;
+  width: 100%;
+  background-image: linear-gradient(90deg, #2563eb, #7c3aed, #a855f7, #2563eb);
+  background-size: 300% 100%;
+  animation: ticker-sweep 5s linear infinite;
+}
+
+@keyframes ticker-sweep {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 300% 0%;
+  }
+}
+
+/* Pulsing "LIVE" indicator, broadcast-style. */
+.live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-100);
+  background-color: rgba(37, 99, 235, 0.15);
+  border: 1px solid rgba(124, 58, 237, 0.45);
+}
+
+.live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 9999px;
+  background-image: linear-gradient(90deg, #3b82f6, #a855f7);
+  animation: live-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes live-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.6);
+  }
+  50% {
+    transform: scale(1.2);
+    box-shadow: 0 0 0 6px rgba(124, 58, 237, 0);
+  }
+}
+
+/* Ambient "studio lighting" glow that slowly breathes behind page content,
+   layered on top of the static PAGE_BACKGROUND gradient so the backdrop
+   never feels static — like a broadcast set under a slowly pulsing light
+   rig rather than a flat backdrop. */
+.electric-bg {
+  position: relative;
+  isolation: isolate;
+}
+
+.electric-bg::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: radial-gradient(700px 420px at 50% -5%, var(--glow-breathe), transparent 70%);
+  animation: breathing-glow 4.5s ease-in-out infinite;
+}
+
+@keyframes breathing-glow {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+/* Light/dark theme toggle switch. */
+.theme-toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 52px;
+  height: 28px;
+  padding: 3px;
+  border-radius: 9999px;
+  background-color: var(--surface-10);
+  border: 1.5px solid var(--border-15);
+  cursor: pointer;
+  transition: background-color 200ms ease;
+}
+
+.theme-toggle-knob {
+  width: 20px;
+  height: 20px;
+  border-radius: 9999px;
+  background-image: linear-gradient(90deg, #2563eb, #7c3aed);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  transition: transform 200ms ease;
+  transform: translateX(0);
+}
+
+[data-theme="light"] .theme-toggle-knob {
+  transform: translateX(24px);
+}
