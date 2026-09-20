@@ -1,122 +1,105 @@
-@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=PT+Serif:wght@400;700&family=JetBrains+Mono:wght@400;500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,500&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Theme tokens. Dark is the default (no attribute needed); ThemeToggle sets
-   data-theme="light" on <html> and persists the choice to localStorage. A
-   blocking inline script in layout.jsx applies the saved theme before first
-   paint so there's no flash of the wrong theme. Most brand gradients (ring
-   accents, gradient text) stay identical in both themes on purpose — only
-   --brand-gradient (solid-fill buttons and topic-name tags) gets a lighter
-   variant in light mode, since the deep 600-shade version reads as heavy
-   against the bright white card surfaces there. */
+/* Theme tokens. Light is the default here (the reference is a warm, paper
+   -toned editorial site); ThemeToggle sets data-theme="dark" on <html> and
+   persists the choice to localStorage. A blocking inline script in
+   layout.jsx applies the saved theme before first paint so there's no
+   flash of the wrong theme. Palette is flat and matte throughout — no
+   gradients, no glow, no blur — a warm cream/sage editorial system with a
+   near-black ink band for emphasis and a single terracotta accent for
+   action. */
 :root {
-  color-scheme: dark;
-  --bg-base: #020207;
-  --glow-1: rgba(124, 58, 237, 0.38);
-  --glow-2: rgba(37, 99, 235, 0.32);
-  --glow-3: rgba(29, 78, 216, 0.24);
-  --glow-breathe: rgba(59, 130, 246, 0.3);
-  --brand-gradient: linear-gradient(90deg, #2563eb, #7c3aed);
+  color-scheme: light;
+  --bg-base: #f6f1e7;
+  --bg-panel: #eaeee2;
+  --ink: #201d16;
+  --header-bg: #fbf8f1;
+  --header-border: rgba(32, 29, 22, 0.08);
+  --band-bg: #201d16;
+  --band-ink: #f6f1e7;
 
-  --text-100: #f5f5f7;
-  --text-85: rgba(245, 245, 247, 0.85);
-  --text-80: rgba(245, 245, 247, 0.8);
-  --text-75: rgba(245, 245, 247, 0.75);
-  --text-70: rgba(245, 245, 247, 0.7);
-  --text-60: rgba(245, 245, 247, 0.6);
-  --text-50: rgba(245, 245, 247, 0.5);
-  --text-40: rgba(245, 245, 247, 0.4);
-  --text-30: rgba(245, 245, 247, 0.3);
+  --accent: #c1602f;
+  --accent-ink: #fdf6ee;
+  --accent-hover: #a54f26;
 
-  --surface-5: rgba(255, 255, 255, 0.05);
-  --surface-8: rgba(255, 255, 255, 0.08);
-  --surface-10: rgba(255, 255, 255, 0.1);
+  --olive: #4a5c3a;
+  --olive-ink: #f6f1e7;
 
-  --border-10: rgba(255, 255, 255, 0.1);
-  --border-15: rgba(255, 255, 255, 0.15);
+  --cat-1: #4a5c3a;
+  --cat-2: #b5652f;
+  --cat-3: #7a5c3a;
+  --cat-4: #6b7a8f;
+  --cat-5: #96543f;
+  --cat-6: #5c6b4f;
 
-  --tag-pill-inner: #0c0820;
-  --card-fade: rgba(2, 2, 7, 0.4);
-  --pill-shadow: none;
+  --text-100: #201d16;
+  --text-85: rgba(32, 29, 22, 0.88);
+  --text-70: rgba(32, 29, 22, 0.72);
+  --text-60: rgba(32, 29, 22, 0.62);
+  --text-50: rgba(32, 29, 22, 0.52);
+  --text-40: rgba(32, 29, 22, 0.42);
 
-  --card-bg: linear-gradient(
-    160deg,
-    rgba(37, 99, 235, 0.1),
-    rgba(124, 58, 237, 0.09) 55%,
-    rgba(2, 2, 7, 0.4)
-  );
-  --card-shadow: 0 20px 60px -30px rgba(124, 58, 237, 0.55);
-  --card-border: var(--border-10);
+  --card-bg: #fffdf9;
+  --card-border: rgba(32, 29, 22, 0.08);
+  --card-shadow: 0 1px 2px rgba(32, 29, 22, 0.04), 0 12px 28px -18px rgba(32, 29, 22, 0.22);
 
-  /* Hero gradient text stops — light, saturated blues/violets read fine
-     against the near-black dark background. */
-  --grad-a: #60a5fa;
-  --grad-b: #7c3aed;
-  --grad-c: #a855f7;
+  --surface: #ffffff;
+  --surface-soft: rgba(32, 29, 22, 0.05);
+  --border: rgba(32, 29, 22, 0.12);
+  --border-soft: rgba(32, 29, 22, 0.08);
 
-  --error-bg: rgba(244, 63, 94, 0.1);
-  --error-border: rgba(244, 63, 94, 0.2);
-  --error-text: #fecdd3;
+  --error-bg: rgba(180, 55, 40, 0.08);
+  --error-border: rgba(180, 55, 40, 0.25);
+  --error-text: #8a3020;
 }
 
-:root[data-theme="light"] {
-  color-scheme: light;
-  --bg-base: #fbfaff;
-  --glow-1: rgba(124, 58, 237, 0.16);
-  --glow-2: rgba(37, 99, 235, 0.14);
-  --glow-3: rgba(29, 78, 216, 0.1);
-  --glow-breathe: rgba(59, 130, 246, 0.12);
-  --brand-gradient: linear-gradient(90deg, #3b82f6, #8b5cf6);
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg-base: #17150f;
+  --bg-panel: #1d1b14;
+  --ink: #f3efe4;
+  --header-bg: #131210;
+  --header-border: rgba(243, 239, 228, 0.08);
+  --band-bg: #0e0d09;
+  --band-ink: #f3efe4;
 
-  /* Near-black (not navy-gray) for maximum crispness on white — this is
-     the single biggest lever for a light theme reading as "bright and
-     legible" rather than washed out. Secondary/muted tiers stay dark-hued
-     too (never lightened toward gray) so small caption text keeps real
-     contrast instead of fading to illegible pale gray. */
-  --text-100: #0b0a12;
-  --text-85: rgba(11, 10, 18, 0.94);
-  --text-80: rgba(11, 10, 18, 0.9);
-  --text-75: rgba(11, 10, 18, 0.85);
-  --text-70: rgba(11, 10, 18, 0.78);
-  --text-60: rgba(11, 10, 18, 0.7);
-  --text-50: rgba(11, 10, 18, 0.62);
-  --text-40: rgba(11, 10, 18, 0.54);
-  --text-30: rgba(11, 10, 18, 0.44);
+  --accent: #e07a44;
+  --accent-ink: #17150f;
+  --accent-hover: #ef8c56;
 
-  /* Buttons/pills sit as clean near-white surfaces on the tinted page
-     background, lifted with a soft shadow, instead of a dark tint blended
-     into a light page (which read as flat gray). */
-  --surface-5: #ffffff;
-  --surface-8: #ffffff;
-  --surface-10: #f3f0fc;
+  --olive: #90a878;
+  --olive-ink: #14170f;
 
-  --border-10: rgba(11, 10, 18, 0.08);
-  --border-15: rgba(11, 10, 18, 0.12);
+  --cat-1: #90a878;
+  --cat-2: #d98a55;
+  --cat-3: #b79a6d;
+  --cat-4: #8fa3b8;
+  --cat-5: #c98671;
+  --cat-6: #96a680;
 
-  --tag-pill-inner: #ffffff;
-  --card-fade: rgba(255, 255, 255, 0.75);
-  --pill-shadow: 0 1px 2px rgba(17, 12, 34, 0.04), 0 4px 14px -4px rgba(17, 12, 34, 0.1);
+  --text-100: #f3efe4;
+  --text-85: rgba(243, 239, 228, 0.88);
+  --text-70: rgba(243, 239, 228, 0.72);
+  --text-60: rgba(243, 239, 228, 0.62);
+  --text-50: rgba(243, 239, 228, 0.52);
+  --text-40: rgba(243, 239, 228, 0.42);
 
-  /* Topic cards are a crisp white surface with a real shadow and a thin
-     gradient accent strip (painted by .topic-card::before) — a solid,
-     modern "elevated card" rather than the moody tinted wash used in dark
-     mode, which read as flat and low-contrast on a light page. */
-  --card-bg: #ffffff;
-  --card-shadow: 0 2px 4px rgba(17, 12, 34, 0.04), 0 20px 48px -24px rgba(37, 99, 235, 0.28);
-  --card-border: rgba(11, 10, 18, 0.06);
+  --card-bg: #201e17;
+  --card-border: rgba(243, 239, 228, 0.09);
+  --card-shadow: 0 1px 2px rgba(0, 0, 0, 0.2), 0 16px 32px -20px rgba(0, 0, 0, 0.55);
 
-  /* Deeper, more saturated stops so the headline stays clearly readable
-     against a light background instead of washing out. */
-  --grad-a: #1d4ed8;
-  --grad-b: #6d28d9;
-  --grad-c: #86198f;
+  --surface: #201e17;
+  --surface-soft: rgba(243, 239, 228, 0.06);
+  --border: rgba(243, 239, 228, 0.14);
+  --border-soft: rgba(243, 239, 228, 0.09);
 
-  --error-bg: rgba(225, 29, 72, 0.07);
-  --error-border: rgba(225, 29, 72, 0.25);
-  --error-text: #9f1239;
+  --error-bg: rgba(224, 100, 80, 0.12);
+  --error-border: rgba(224, 100, 80, 0.3);
+  --error-text: #f0a08e;
 }
 
 body {
@@ -124,189 +107,184 @@ body {
   color: var(--text-100);
 }
 
-/* Thin gradient accent strip along the top edge of a topic card — the
-   brand touch that replaces dark mode's tinted card wash in light mode,
-   where the card body is instead a plain white surface (see --card-bg). */
-.topic-card {
-  position: relative;
+::selection {
+  background-color: var(--accent);
+  color: var(--accent-ink);
 }
 
-.topic-card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background-image: linear-gradient(90deg, #2563eb, #7c3aed, #a855f7);
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-base);
+}
+::-webkit-scrollbar-thumb {
+  background-color: var(--border);
+  border-radius: 999px;
+  border: 3px solid var(--bg-base);
 }
 
-/* Electric blue → purple gradient, used for hero headlines instead of a
-   flat accent color — kept off body copy so it never hurts legibility,
-   only display-sized text. No pink/cyan. Stops shift per theme (see
-   --grad-a/b/c) so the headline stays readable on both light and dark
-   backgrounds. */
-.gradient-text {
-  background-image: linear-gradient(90deg, var(--grad-a), var(--grad-b), var(--grad-c));
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
-/* Pill/tag buttons: a plain subtle border at rest, a bright gradient ring
-   on hover or when active. Two layered backgrounds (inner solid fill +
-   outer gradient) clipped to padding-box/border-box respectively — this is
-   the standard way to get a gradient border that still respects
-   border-radius, since border-image doesn't. */
-.tag-pill {
-  background-color: var(--surface-8);
-  border: 1.5px solid var(--border-15);
+/* Fixed masthead — warm off-white, never changes hue between themes'
+   surrounding page (only its own tokens swap), pill-style nav links. */
+.masthead {
+  background-color: var(--header-bg);
+  border-bottom: 1px solid var(--header-border);
+}
+
+.masthead-link {
+  font-family: "Work Sans", ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-60);
+  padding: 0.4rem 0.15rem;
+  border-bottom: 2px solid transparent;
+  transition: color 150ms ease, border-color 150ms ease;
+}
+
+.masthead-link:hover {
   color: var(--text-100);
-  box-shadow: var(--pill-shadow);
-  transition: border-color 200ms ease, background-image 200ms ease, box-shadow 200ms ease;
 }
 
-.tag-pill:hover,
-.tag-pill.is-active {
-  border-color: transparent;
-  background-image: linear-gradient(var(--tag-pill-inner), var(--tag-pill-inner)),
-    linear-gradient(90deg, #2563eb, #7c3aed, #a855f7);
-  background-origin: border-box;
-  background-clip: padding-box, border-box;
-  box-shadow: 0 4px 18px -6px rgba(124, 58, 237, 0.5);
+.masthead-link.is-active {
+  color: var(--text-100);
+  border-bottom-color: var(--accent);
 }
 
-/* Destructive variant (Unfollow): on hover, only the border goes red — no
-   gradient ring, no text color change, so it reads as a warning outline
-   rather than the usual brand-accent hover state. */
-.tag-pill.tag-pill-danger:hover {
-  border-color: rgba(244, 63, 94, 0.6);
-  background-image: none;
-  box-shadow: none;
+/* Full-bleed dark ink band, used for the hero and section page-titles —
+   the one strong contrast move in an otherwise quiet, flat palette. */
+.ink-band {
+  background-color: var(--band-bg);
+  color: var(--band-ink);
 }
 
-/* Same gradient ring for cards, via a mask-based technique instead of the
-   background-clip trick above — a card's interior is a live photo, not a
-   solid fill, so the ring needs to stay fully transparent in the middle
-   (background-clip's padding-box/border-box layering can't do that; a
-   masked pseudo-element that only paints the border-width ring can). */
-.card-ring::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 2px;
-  background: linear-gradient(90deg, #2563eb, #7c3aed, #a855f7);
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask-composite: exclude;
-  opacity: 0;
-  transition: opacity 200ms ease;
-}
-
-.group:hover .card-ring::before {
-  opacity: 1;
-}
-
-/* Breaking-news ticker bar — a thin strip of light sweeping across the very
-   top of the page, like a broadcast lower-third always mid-transmission. */
-.ticker-bar {
-  height: 3px;
-  width: 100%;
-  background-image: linear-gradient(90deg, #2563eb, #7c3aed, #a855f7, #2563eb);
-  background-size: 300% 100%;
-  animation: ticker-sweep 5s linear infinite;
-}
-
-@keyframes ticker-sweep {
-  0% {
-    background-position: 0% 0%;
-  }
-  100% {
-    background-position: 300% 0%;
-  }
-}
-
-/* Pulsing "LIVE" indicator, broadcast-style. */
-.live-badge {
+/* Buttons */
+.btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 10px;
-  border-radius: 9999px;
-  font-family: "JetBrains Mono", monospace;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
+  gap: 0.5rem;
+  font-family: "Work Sans", ui-sans-serif, system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 0.7rem 1.4rem;
+  border-radius: 999px;
+  transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease, transform 150ms ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn-accent {
+  background-color: var(--accent);
+  color: var(--accent-ink);
+}
+.btn-accent:hover {
+  background-color: var(--accent-hover);
+}
+
+.btn-dark {
+  background-color: var(--band-bg);
+  color: var(--band-ink);
+}
+.btn-dark:hover {
+  opacity: 0.88;
+}
+
+.btn-outline {
+  background-color: transparent;
   color: var(--text-100);
-  background-color: rgba(37, 99, 235, 0.15);
-  border: 1px solid rgba(124, 58, 237, 0.45);
+  border: 1.5px solid var(--border);
+}
+.btn-outline:hover {
+  border-color: var(--text-60);
+  background-color: var(--surface-soft);
 }
 
-.live-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 9999px;
-  background-image: linear-gradient(90deg, #3b82f6, #a855f7);
-  animation: live-pulse 1.6s ease-in-out infinite;
+/* Filter/tag pills — small, quiet, olive when active. Matches the sage
+   filter bar in the reference rather than a bright brand-gradient chip. */
+.tag-pill {
+  font-family: "Work Sans", ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  background-color: var(--surface);
+  border: 1.5px solid var(--border-soft);
+  color: var(--text-70);
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
 }
 
-@keyframes live-pulse {
-  0%,
-  100% {
-    transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.6);
-  }
-  50% {
-    transform: scale(1.2);
-    box-shadow: 0 0 0 6px rgba(124, 58, 237, 0);
-  }
+.tag-pill:hover {
+  border-color: var(--text-40);
+  color: var(--text-100);
 }
 
-/* Ambient "studio lighting" glow that slowly breathes behind page content,
-   layered on top of the static PAGE_BACKGROUND gradient so the backdrop
-   never feels static — like a broadcast set under a slowly pulsing light
-   rig rather than a flat backdrop. */
-.electric-bg {
-  position: relative;
-  isolation: isolate;
+.tag-pill.is-active {
+  background-color: var(--olive);
+  border-color: var(--olive);
+  color: var(--olive-ink);
 }
 
-.electric-bg::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background-image: radial-gradient(700px 420px at 50% -5%, var(--glow-breathe), transparent 70%);
-  animation: breathing-glow 4.5s ease-in-out infinite;
+.tag-pill.tag-pill-danger:hover {
+  border-color: var(--error-border);
+  color: var(--error-text);
 }
 
-@keyframes breathing-glow {
-  0%,
-  100% {
-    opacity: 0.55;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.1);
-  }
+/* Category label pill on cards — solid flat fill, color picked per topic
+   via categoryAccent() in lib/theme.js. */
+.category-pill {
+  display: inline-block;
+  font-family: "Work Sans", ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #fffdf9;
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
 }
 
-/* Light/dark theme toggle switch. */
+/* Plain white/paper card — no gradient wash, no accent border stripe, just
+   a quiet shadow lift on hover. */
+.card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--card-shadow);
+}
+
+.topic-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--card-shadow);
+}
+
+.story-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+  transition: box-shadow 200ms ease, transform 200ms ease;
+}
+
+.story-card:hover {
+  box-shadow: var(--card-shadow);
+  transform: translateY(-3px);
+}
+
+/* Light/dark theme toggle switch — flat olive knob, no gradient. */
 .theme-toggle {
   position: relative;
   display: inline-flex;
   align-items: center;
-  width: 52px;
+  width: 50px;
   height: 28px;
   padding: 3px;
-  border-radius: 9999px;
-  background-color: var(--surface-10);
-  border: 1.5px solid var(--border-15);
+  border-radius: 999px;
+  background-color: var(--surface-soft);
+  border: 1.5px solid var(--border-soft);
   cursor: pointer;
   transition: background-color 200ms ease;
 }
@@ -314,16 +292,16 @@ body {
 .theme-toggle-knob {
   width: 20px;
   height: 20px;
-  border-radius: 9999px;
-  background-image: linear-gradient(90deg, #2563eb, #7c3aed);
+  border-radius: 999px;
+  background-color: var(--olive);
+  color: var(--olive-ink);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
   transition: transform 200ms ease;
   transform: translateX(0);
 }
 
-[data-theme="light"] .theme-toggle-knob {
-  transform: translateX(24px);
+[data-theme="dark"] .theme-toggle-knob {
+  transform: translateX(22px);
 }

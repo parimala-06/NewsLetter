@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { ArrowUp, ArrowDown, ArrowLeft, X, Check, ArrowUpRight } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
-import { CATEGORIES, BRAND_GRADIENT, BRAND_GLOW, PAGE_BACKGROUND } from "@/lib/theme";
+import { CATEGORIES, categoryAccent } from "@/lib/theme";
+import MastHead from "@/app/components/MastHead";
 import ThemeToggle from "@/app/components/ThemeToggle";
 
 export default function Settings() {
@@ -111,28 +113,30 @@ export default function Settings() {
   if (checkingAuth) return null;
 
   return (
-    <main
-      className="min-h-screen text-[var(--text-100)] electric-bg"
-      style={{ background: PAGE_BACKGROUND }}
-    >
-      <div className="ticker-bar" />
+    <main className="min-h-screen bg-[var(--bg-panel)]">
+      <MastHead
+        links={[
+          { href: "/dashboard", label: "Dashboard" },
+          { href: "/settings", label: "Settings" },
+        ]}
+        active="/settings"
+        actions={<ThemeToggle />}
+      />
+
       <header className="max-w-3xl mx-auto px-6 pt-10 pb-6">
-        <div className="flex items-center justify-between mb-4">
-          <Link
-            href="/dashboard"
-            className="tag-pill group inline-flex items-center gap-2 pl-2 pr-4 py-1.5 rounded-full font-mono text-xs uppercase tracking-widest text-[var(--text-70)] hover:text-[var(--text-100)]"
-          >
-            <span className="flex items-center justify-center w-7 h-7 rounded-full bg-[var(--surface-10)] text-base leading-none transition-transform duration-200 group-hover:-translate-x-0.5">
-              ←
-            </span>
-            Back to dashboard
-          </Link>
-          <ThemeToggle />
-        </div>
-        <h1 className="gradient-text font-display text-3xl md:text-4xl font-black tracking-tight mb-2">
+        <Link
+          href="/dashboard"
+          className="tag-pill inline-flex items-center gap-2 pl-2 pr-4 py-1.5 rounded-full mb-5"
+        >
+          <span className="flex items-center justify-center w-6 h-6 rounded-full bg-[var(--surface-soft)]">
+            <ArrowLeft size={12} />
+          </span>
+          Back to dashboard
+        </Link>
+        <h1 className="font-display text-3xl md:text-4xl font-semibold text-[var(--text-100)] mb-2">
           Your topics
         </h1>
-        <p className="text-[var(--text-85)] max-w-xl">
+        <p className="text-[var(--text-60)] max-w-xl leading-relaxed">
           Choose which topics your newsroom agent should keep a digest ready
           for. Toggle any category below, or add your own.
         </p>
@@ -140,7 +144,7 @@ export default function Settings() {
 
       <div className="max-w-3xl mx-auto px-6 pb-16 space-y-10">
         <section>
-          <h2 className="font-mono text-xs font-bold uppercase tracking-widest text-[var(--text-100)] mb-3">
+          <h2 className="font-sans text-xs font-semibold uppercase tracking-widest text-[var(--text-100)] mb-3">
             Categories
           </h2>
           <div className="flex flex-wrap gap-2">
@@ -152,11 +156,11 @@ export default function Settings() {
                   key={cat}
                   onClick={() => toggleCategory(cat)}
                   disabled={busy || loadingTopics}
-                  className={`tag-pill px-4 py-2 rounded-full font-mono text-xs uppercase tracking-wide disabled:opacity-50 ${
-                    active ? "is-active text-[var(--text-100)]" : "text-[var(--text-80)] hover:text-[var(--text-100)]"
+                  className={`tag-pill px-4 py-2 rounded-full inline-flex items-center gap-1.5 disabled:opacity-50 ${
+                    active ? "is-active" : ""
                   }`}
                 >
-                  {active ? "✓ " : ""}
+                  {active && <Check size={13} />}
                   {cat}
                 </button>
               );
@@ -165,7 +169,7 @@ export default function Settings() {
         </section>
 
         <section>
-          <h2 className="font-mono text-xs font-bold uppercase tracking-widest text-[var(--text-100)] mb-3">
+          <h2 className="font-sans text-xs font-semibold uppercase tracking-widest text-[var(--text-100)] mb-3">
             Your own topics
           </h2>
           <form onSubmit={handleAddCustom} className="flex gap-2 mb-4">
@@ -173,36 +177,30 @@ export default function Settings() {
               value={customTopic}
               onChange={(e) => setCustomTopic(e.target.value)}
               placeholder="e.g. generative AI regulation, F1, lunar missions…"
-              className="flex-1 border border-[var(--border-15)] bg-[var(--surface-5)] px-4 py-2 rounded-full text-sm text-[var(--text-100)] placeholder-[var(--text-50)] focus:outline-none focus:border-violet-400"
+              className="flex-1 border border-[var(--border)] bg-[var(--surface)] px-4 py-2 rounded-full text-sm text-[var(--text-100)] placeholder-[var(--text-40)] focus:outline-none focus:border-[var(--accent)]"
             />
-            <button
-              type="submit"
-              className="px-5 py-2 rounded-full font-mono text-xs uppercase tracking-wide text-white transition-transform hover:scale-105"
-              style={{ backgroundImage: BRAND_GRADIENT, boxShadow: BRAND_GLOW }}
-            >
+            <button type="submit" className="btn btn-accent">
               Add
             </button>
           </form>
 
           {customTopics.length === 0 ? (
-            <p className="text-[var(--text-70)] text-sm">
-              No custom topics yet — add one above.
-            </p>
+            <p className="text-[var(--text-60)] text-sm">No custom topics yet — add one above.</p>
           ) : (
             <div className="flex flex-wrap gap-2">
               {customTopics.map((t) => (
                 <span
                   key={t.topic}
-                  className="tag-pill flex items-center gap-2 px-4 py-2 rounded-full font-mono text-xs uppercase tracking-wide text-[var(--text-80)]"
+                  className="tag-pill flex items-center gap-2 pl-4 pr-2.5 py-2 rounded-full"
                 >
                   {t.topic}
                   <button
                     onClick={() => unfollow(t.topic, false)}
                     disabled={pending === keyOf(t.topic, false)}
-                    className="text-[var(--text-60)] hover:text-rose-300 disabled:opacity-50"
+                    className="text-[var(--text-40)] hover:text-[var(--error-text)] disabled:opacity-50"
                     aria-label={`Remove ${t.topic}`}
                   >
-                    ×
+                    <X size={14} />
                   </button>
                 </span>
               ))}
@@ -211,11 +209,11 @@ export default function Settings() {
         </section>
 
         <section>
-          <h2 className="font-mono text-xs font-bold uppercase tracking-widest text-[var(--text-100)] mb-3">
+          <h2 className="font-sans text-xs font-semibold uppercase tracking-widest text-[var(--text-100)] mb-3">
             Order your topics
           </h2>
           {topics.length === 0 ? (
-            <p className="text-[var(--text-70)] text-sm">
+            <p className="text-[var(--text-60)] text-sm">
               Follow a topic above to set the order it appears on your dashboard.
             </p>
           ) : (
@@ -223,35 +221,33 @@ export default function Settings() {
               {topics.map((t, i) => (
                 <div
                   key={keyOf(t.topic, t.is_category)}
-                  className="group flex items-center justify-between gap-3 px-4 py-2.5 rounded-2xl bg-[var(--surface-5)] border border-[var(--border-10)] transition-all duration-200 hover:border-[var(--border-15)] hover:bg-[var(--surface-10)] hover:shadow-[0_4px_16px_-6px_rgba(124,58,237,0.35)]"
+                  className="card flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl"
                 >
                   <div className="flex items-center gap-3">
                     <span
-                      className="flex items-center justify-center w-6 h-6 shrink-0 rounded-full text-[10px] font-mono font-bold text-white transition-transform duration-200 group-hover:scale-110"
-                      style={{ backgroundImage: "var(--brand-gradient)" }}
+                      className="flex items-center justify-center w-6 h-6 shrink-0 rounded-full text-[10px] font-sans font-bold text-[#fffdf9]"
+                      style={{ backgroundColor: categoryAccent(t.topic) }}
                     >
                       {i + 1}
                     </span>
-                    <span className="font-mono text-xs uppercase tracking-wide text-[var(--text-85)]">
-                      {t.topic}
-                    </span>
+                    <span className="font-sans text-sm text-[var(--text-85)]">{t.topic}</span>
                   </div>
                   <div className="flex items-center gap-1.5">
                     <button
                       onClick={() => moveTopic(i, -1)}
                       disabled={i === 0}
-                      className="tag-pill w-7 h-7 flex items-center justify-center rounded-full text-[var(--text-70)] hover:text-[var(--text-100)] disabled:opacity-30"
+                      className="tag-pill w-7 h-7 flex items-center justify-center rounded-full disabled:opacity-30"
                       aria-label={`Move ${t.topic} up`}
                     >
-                      ↑
+                      <ArrowUp size={13} />
                     </button>
                     <button
                       onClick={() => moveTopic(i, 1)}
                       disabled={i === topics.length - 1}
-                      className="tag-pill w-7 h-7 flex items-center justify-center rounded-full text-[var(--text-70)] hover:text-[var(--text-100)] disabled:opacity-30"
+                      className="tag-pill w-7 h-7 flex items-center justify-center rounded-full disabled:opacity-30"
                       aria-label={`Move ${t.topic} down`}
                     >
-                      ↓
+                      <ArrowDown size={13} />
                     </button>
                   </div>
                 </div>
@@ -260,12 +256,9 @@ export default function Settings() {
           )}
         </section>
 
-        <Link
-          href="/dashboard"
-          className="inline-block px-6 py-2.5 rounded-full font-mono text-xs uppercase tracking-wide text-white transition-transform hover:scale-105"
-          style={{ backgroundImage: BRAND_GRADIENT, boxShadow: BRAND_GLOW }}
-        >
+        <Link href="/dashboard" className="btn btn-accent inline-flex">
           Done — view my dashboard
+          <ArrowUpRight size={16} />
         </Link>
       </div>
     </main>

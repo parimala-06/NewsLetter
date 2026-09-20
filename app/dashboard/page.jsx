@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { Settings as SettingsIcon, LogOut, ArrowUpRight } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
-import { BRAND_GRADIENT, BRAND_GLOW, PAGE_BACKGROUND } from "@/lib/theme";
 import { streamDigest } from "@/app/components/NewsCards";
 import TopicDigestCard from "@/app/components/TopicDigestCard";
+import MastHead from "@/app/components/MastHead";
 import ThemeToggle from "@/app/components/ThemeToggle";
 
 function topicKey(topic, isCategory) {
@@ -140,69 +141,54 @@ export default function Dashboard() {
   const firstName = fullName ? fullName.trim().split(/\s+/)[0] : null;
 
   return (
-    <main
-      className="min-h-screen text-[var(--text-100)] electric-bg"
-      style={{ background: PAGE_BACKGROUND }}
-    >
-      <div className="ticker-bar" />
-      <header className="max-w-6xl mx-auto px-6 pt-8 md:pt-12 pb-6 flex flex-wrap items-center gap-4">
-        <div className="flex-1 min-w-[200px]">
-          <span className="live-badge mb-3">
-            <span className="live-dot" />
-            On the wire
-          </span>
-          <h1 className="gradient-text font-display text-3xl md:text-5xl font-black tracking-tight">
-            {firstName ? `${firstName}'s Briefing` : "Your Briefing"}
-          </h1>
-        </div>
-        <ThemeToggle />
-        <Link
-          href="/settings"
-          className="tag-pill px-4 py-2 rounded-full font-mono text-xs uppercase tracking-wide text-[var(--text-80)] hover:text-[var(--text-100)]"
-        >
-          Settings
-        </Link>
-        <button
-          onClick={handleSignOut}
-          className="px-4 py-2 rounded-full font-mono text-xs uppercase tracking-wide text-white transition-transform hover:scale-105"
-          style={{ backgroundImage: BRAND_GRADIENT, boxShadow: BRAND_GLOW }}
-        >
-          Sign out
-        </button>
-      </header>
+    <main className="min-h-screen bg-[var(--bg-panel)]">
+      <MastHead
+        links={[
+          { href: "/dashboard", label: "Dashboard" },
+          { href: "/settings", label: "Settings" },
+        ]}
+        active="/dashboard"
+        actions={
+          <>
+            <ThemeToggle />
+            <Link href="/settings" className="md:hidden btn btn-outline px-3 py-2" aria-label="Settings">
+              <SettingsIcon size={16} />
+            </Link>
+            <button onClick={handleSignOut} className="btn btn-outline">
+              <LogOut size={15} />
+              Sign out
+            </button>
+          </>
+        }
+      />
+
+      <div className="max-w-6xl mx-auto px-6 pt-10 pb-6">
+        <h1 className="font-display text-3xl md:text-4xl font-semibold text-[var(--text-100)]">
+          {firstName ? `${firstName}'s Briefing` : "Your Briefing"}
+        </h1>
+      </div>
 
       <div className="max-w-6xl mx-auto px-6 pb-16">
-        {topics === null && (
-          <p className="font-mono text-sm text-[var(--text-40)]">Loading your topics…</p>
-        )}
+        {topics === null && <p className="font-sans text-sm text-[var(--text-40)]">Loading your topics…</p>}
 
         {topics && topics.length === 0 && (
-          <div
-            className="rounded-3xl border border-[var(--border-10)] p-10 text-center max-w-2xl mx-auto"
-            style={{
-              background:
-                "linear-gradient(160deg, rgba(37,99,235,0.12), rgba(124,58,237,0.10))",
-            }}
-          >
-            <p className="font-display text-2xl font-bold text-[var(--text-100)] mb-3">
+          <div className="card rounded-2xl p-10 text-center max-w-2xl mx-auto">
+            <p className="font-display text-2xl font-semibold text-[var(--text-100)] mb-3">
               You haven't picked any topics yet
             </p>
-            <p className="text-[var(--text-60)] mb-6">
+            <p className="text-[var(--text-60)] mb-6 leading-relaxed">
               Choose a few categories or add your own topics, and your agent
               will keep a digest ready for each one every time you check in.
             </p>
-            <Link
-              href="/settings"
-              className="inline-block px-6 py-2.5 rounded-full font-mono text-xs uppercase tracking-wide text-white transition-transform hover:scale-105"
-              style={{ backgroundImage: BRAND_GRADIENT, boxShadow: BRAND_GLOW }}
-            >
+            <Link href="/settings" className="btn btn-accent inline-flex">
               Choose your topics
+              <ArrowUpRight size={16} />
             </Link>
           </div>
         )}
 
         {topics && topics.length > 0 && (
-          <div className="space-y-8">
+          <div className="space-y-6">
             {topics.map((t) => {
               const key = topicKey(t.topic, t.is_category);
               const state = byTopic[key] || {};

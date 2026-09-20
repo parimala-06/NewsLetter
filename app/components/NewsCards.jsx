@@ -1,8 +1,9 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
+import { ArrowUpRight } from "lucide-react";
 
-export { CATEGORIES, BRAND_GRADIENT, BRAND_GLOW, TEXT_ACCENT, PAGE_BACKGROUND } from "@/lib/theme";
+export { CATEGORIES, ACCENT, categoryAccent } from "@/lib/theme";
 
 export function timeAgo(date) {
   if (!date) return "";
@@ -19,13 +20,7 @@ export function CardImage({ src, alt }) {
   const [failed, setFailed] = useState(!src);
 
   if (!src || failed) {
-    return (
-      <div className="absolute inset-0 flex items-center justify-center bg-slate-800">
-        <span className="font-mono text-[10px] uppercase tracking-widest text-white/40">
-          No Photo Available
-        </span>
-      </div>
-    );
+    return <div className="absolute inset-0 bg-[var(--surface-soft)]" />;
   }
 
   return (
@@ -38,104 +33,47 @@ export function CardImage({ src, alt }) {
   );
 }
 
+// A single story: photo inset within a white card (padding around the
+// image, not full-bleed), category-colored source tag, serif headline,
+// short blurb, and a plain text "Read more" link. No tilt, no cursor
+// -tracked glow, no gradient ring — a quiet hover lift is the only motion.
 export function GlossyCard({ story }) {
-  const ref = useRef(null);
-
-  function handleMouseMove(e) {
-    const el = ref.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width;
-    const y = (e.clientY - rect.top) / rect.height;
-    el.style.setProperty("--rx", `${(0.5 - y) * 12}deg`);
-    el.style.setProperty("--ry", `${(x - 0.5) * 12}deg`);
-    el.style.setProperty("--mx", `${x * 100}%`);
-    el.style.setProperty("--my", `${y * 100}%`);
-    el.style.setProperty("--scale", "1.03");
-  }
-
-  function handleMouseLeave() {
-    const el = ref.current;
-    if (!el) return;
-    el.style.setProperty("--rx", "0deg");
-    el.style.setProperty("--ry", "0deg");
-    el.style.setProperty("--scale", "1");
-  }
-
   return (
-    <div
-      ref={ref}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      className="group relative block h-80 rounded-3xl overflow-hidden will-change-transform"
-      style={{
-        transform:
-          "perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) scale(var(--scale, 1))",
-        transition: "transform 200ms ease, box-shadow 250ms ease",
-        boxShadow: "0 20px 40px -18px rgba(139, 92, 246, 0.35)",
-      }}
+    <a
+      href={story.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="story-card group flex flex-col rounded-2xl p-3 no-underline"
     >
-      <CardImage src={story.imageUrl} alt={story.title} />
-
-      {/* Black wash over roughly the bottom half, fading in gradually
-          (several stops, not one hard edge) so it blends into the photo
-          rather than looking like a pasted-on panel — keeps text readable
-          no matter how bright the photo underneath is. */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            "linear-gradient(180deg, transparent 0%, transparent 30%, rgba(8,6,15,0.2) 48%, rgba(8,6,15,0.6) 65%, rgba(8,6,15,0.9) 84%, rgba(8,6,15,0.98) 100%)",
-        }}
-      />
-
-      {/* glossy highlight that tracks the cursor — kept subtle so it never
-          washes out the text sitting on top of it */}
-      <div
-        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(59,130,246,0.4), transparent 45%)",
-          mixBlendMode: "screen",
-        }}
-      />
-
-      {/* gradient ring border on hover, matching the tag pills */}
-      <div className="card-ring absolute inset-0 rounded-3xl pointer-events-none" />
-
-      {story.isNew && (
-        <span className="absolute top-4 right-4 px-2.5 py-1 rounded-full text-[10px] font-mono uppercase tracking-widest font-bold text-white shadow-lg"
-          style={{ backgroundImage: "linear-gradient(90deg, #2563eb, #7c3aed)" }}
-        >
-          New
+      <div className="relative h-40 rounded-xl overflow-hidden mb-1.5">
+        <CardImage src={story.imageUrl} alt={story.title} />
+        {story.isNew && (
+          <span className="category-pill absolute top-3 right-3" style={{ backgroundColor: "var(--accent)" }}>
+            New
+          </span>
+        )}
+      </div>
+      {story.imageUrl && story.imageCredit && (
+        <span className="font-sans text-[10px] text-[var(--text-40)] px-2 mb-2.5">
+          Photo: {story.imageCredit}
         </span>
       )}
-
-      <div className="absolute inset-0 flex flex-col justify-end p-5 pointer-events-none">
-        <span className="self-start mb-3 px-3 py-1 rounded-full text-[10px] font-mono uppercase tracking-widest font-bold text-white bg-black/50 border border-white/15 backdrop-blur-sm">
+      <div className="px-2 pb-2 flex flex-col flex-1">
+        <span className="font-sans text-[11px] font-semibold uppercase tracking-widest text-[var(--text-40)] mb-2">
           {story.source}
         </span>
-        <h3 className="text-white font-display font-bold leading-snug drop-shadow-[0_2px_8px_rgba(0,0,0,0.7)] text-lg">
+        <h3 className="font-display text-lg font-semibold leading-snug text-[var(--text-100)] mb-2">
           {story.title}
         </h3>
-        <p className="text-white/85 mt-2 drop-shadow-[0_1px_4px_rgba(0,0,0,0.7)] text-sm line-clamp-2">
+        <p className="text-sm text-[var(--text-60)] leading-relaxed line-clamp-2 mb-4">
           {story.blurb}
         </p>
-        <a
-          href={story.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="pointer-events-auto self-start mt-3 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[11px] font-mono uppercase tracking-widest font-medium text-white transition-transform hover:scale-105"
-          style={{
-            backgroundImage: "linear-gradient(90deg, #2563eb, #7c3aed, #a855f7)",
-            boxShadow: "0 6px 20px -6px rgba(124, 58, 237, 0.7)",
-          }}
-        >
+        <span className="mt-auto inline-flex items-center gap-1 text-sm font-semibold text-[var(--accent)]">
           Read more
-          <span aria-hidden="true">→</span>
-        </a>
+          <ArrowUpRight size={15} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+        </span>
       </div>
-    </div>
+    </a>
   );
 }
 
@@ -143,20 +81,17 @@ export function DigestSkeleton({ compact }) {
   return (
     <div className="animate-pulse">
       {!compact && (
-        <div className="rounded-3xl bg-[var(--surface-10)] border border-[var(--border-10)] p-6 md:p-8 mb-8">
-          <div className="h-4 w-28 bg-[var(--surface-10)] rounded-full mb-4" />
-          <div className="h-9 w-3/4 bg-[var(--surface-10)] rounded mb-3" />
-          <div className="h-9 w-1/2 bg-[var(--surface-10)] rounded mb-5" />
-          <div className="h-4 w-full bg-[var(--surface-10)] rounded mb-2" />
-          <div className="h-4 w-5/6 bg-[var(--surface-10)] rounded" />
+        <div className="card rounded-2xl p-6 md:p-8 mb-8">
+          <div className="h-4 w-28 bg-[var(--surface-soft)] rounded-full mb-4" />
+          <div className="h-8 w-3/4 bg-[var(--surface-soft)] rounded mb-3" />
+          <div className="h-8 w-1/2 bg-[var(--surface-soft)] rounded mb-5" />
+          <div className="h-4 w-full bg-[var(--surface-soft)] rounded mb-2" />
+          <div className="h-4 w-5/6 bg-[var(--surface-soft)] rounded" />
         </div>
       )}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {Array.from({ length: compact ? 3 : 6 }).map((_, i) => (
-          <div
-            key={i}
-            className="h-80 rounded-3xl bg-[var(--surface-10)] border border-[var(--border-10)]"
-          />
+          <div key={i} className="h-64 rounded-2xl bg-[var(--surface-soft)] border border-[var(--card-border)]" />
         ))}
       </div>
     </div>

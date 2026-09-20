@@ -11,8 +11,8 @@ const THEME_INIT_SCRIPT = `
 (function () {
   try {
     var saved = localStorage.getItem("theme");
-    var theme = saved || (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
-    if (theme === "light") document.documentElement.setAttribute("data-theme", "light");
+    var theme = saved || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    if (theme === "dark") document.documentElement.setAttribute("data-theme", "dark");
   } catch (e) {}
 })();
 `;
