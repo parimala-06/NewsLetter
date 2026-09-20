@@ -354,3 +354,267 @@ body {
 [data-theme="dark"] .theme-toggle-knob {
   transform: translateX(22px);
 }
+
+/* Features section entrance + hover focus. RevealSection sets data-reveal to
+   "in" whenever the section is on screen and "pending" once it has left (so it
+   replays on every pass, up or down); without JS
+   neither state applies and the content stays visible. Cards ease in from a
+   slightly smaller, softly blurred state; on hover the siblings recede so the
+   hovered card takes focus. Reduced motion keeps the fade and the dimming but
+   drops scale, blur and icon movement. */
+@keyframes feat-focus {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+    filter: blur(4px);
+  }
+}
+
+@keyframes feat-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+.feat-section[data-reveal="pending"] .feat-intro,
+.feat-section[data-reveal="pending"] .feat-card {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .feat-section[data-reveal="in"] .feat-intro {
+    animation: feat-fade 500ms ease-out backwards;
+  }
+  .feat-section[data-reveal="in"] .feat-card {
+    animation: feat-focus 700ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+    animation-delay: calc(80ms + var(--i, 0) * 70ms);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .feat-section[data-reveal="in"] .feat-intro,
+  .feat-section[data-reveal="in"] .feat-card {
+    animation: feat-fade 320ms ease-out backwards;
+    animation-delay: calc(var(--i, 0) * 60ms);
+  }
+}
+
+@media (hover: hover) {
+  .feat-card {
+    transition: opacity 260ms ease-out, transform 360ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 300ms ease-out;
+  }
+  .feat-grid:has(.feat-card:hover) .feat-card:not(:hover) {
+    opacity: 0.6;
+  }
+  .feat-card:hover {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06), 0 24px 40px -22px rgba(0, 0, 0, 0.32);
+  }
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .feat-grid:has(.feat-card:hover) .feat-card:not(:hover) {
+    transform: scale(0.985);
+  }
+  .feat-card:hover {
+    transform: scale(1.025);
+  }
+  .feat-icon svg {
+    transform-box: fill-box;
+    transform-origin: center;
+    transition: transform 520ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .feat-card:hover .lucide-tag {
+    transform: rotate(-14deg) scale(1.08);
+  }
+  .feat-card:hover .lucide-arrow-up-down {
+    transform: scaleY(-1);
+  }
+  .feat-card:hover .lucide-refresh-cw {
+    transform: rotate(180deg);
+  }
+  .feat-card:hover .lucide-newspaper {
+    transform: translateY(-2px) scale(1.1);
+  }
+}
+
+/* "How it works" steps: a zig-zag timeline. A spine runs down the middle
+   with a numbered node per stage and the text alternating left and right
+   (stacked on a left rail below 1024px). RevealSection sets data-reveal="in"
+   on arrival, which draws the spine node to node while each stage slides in
+   from its own side. Reduced motion keeps the finished layout and just fades
+   the stages in. */
+.zz-step:nth-child(odd) {
+  --s: -1;
+}
+
+.zz-step:nth-child(even) {
+  --s: 1;
+}
+
+.zz-node {
+  background-color: var(--olive);
+  color: var(--olive-ink);
+}
+
+.zz-step:not(:last-child)::before,
+.zz-step:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: calc(var(--node) / 2 - 1px);
+  top: var(--node);
+  width: 2px;
+  height: calc(100% - var(--node) + 2.5rem);
+}
+
+.zz-step:not(:last-child)::before {
+  background-color: var(--border);
+}
+
+.zz-step:not(:last-child)::after {
+  background-color: var(--olive);
+  transform-origin: top;
+}
+
+@media (min-width: 1024px) {
+  .zz-step:not(:last-child)::before,
+  .zz-step:not(:last-child)::after {
+    left: calc(50% - 1px);
+  }
+}
+
+@keyframes zz-node {
+  from {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+}
+
+@keyframes zz-in-y {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+@keyframes zz-in-x {
+  from {
+    opacity: 0;
+    transform: translateX(calc(var(--s, 1) * 28px));
+  }
+}
+
+@keyframes zz-grow {
+  from {
+    transform: scaleY(0);
+  }
+}
+
+@keyframes zz-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+.steps-section[data-reveal="pending"] .zz-node,
+.steps-section[data-reveal="pending"] .zz-side {
+  opacity: 0;
+}
+
+.steps-section[data-reveal="pending"] .zz-step:not(:last-child)::after {
+  transform: scaleY(0);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .steps-section[data-reveal="in"] .zz-node {
+    animation: zz-node 460ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+    animation-delay: calc(var(--i, 0) * 420ms);
+  }
+  .steps-section[data-reveal="in"] .zz-side {
+    animation: zz-in-y 640ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+    animation-delay: calc(120ms + var(--i, 0) * 420ms);
+  }
+  .steps-section[data-reveal="in"] .zz-step:not(:last-child)::after {
+    animation: zz-grow 420ms cubic-bezier(0.3, 0, 0.2, 1) backwards;
+    animation-delay: calc(200ms + var(--i, 0) * 420ms);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) and (min-width: 1024px) {
+  .steps-section[data-reveal="in"] .zz-side {
+    animation-name: zz-in-x;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .steps-section[data-reveal="in"] .zz-step {
+    animation: zz-fade 320ms ease-out backwards;
+    animation-delay: calc(var(--i, 0) * 60ms);
+  }
+}
+
+/* Hero and closing band entrances. Same data-reveal contract as the sections
+   above: RevealSection flips it to "in" on every arrival and back to "pending"
+   once the band has left the screen, so the entrance replays on each pass.
+   The hero renders as "in" so it plays on load; copy rises in a stagger while
+   the photo is wiped in from the left. Reduced motion gets a plain fade. */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+}
+
+@keyframes hero-wipe {
+  from {
+    opacity: 0;
+    clip-path: inset(0 100% 0 0 round 16px);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0 0 0 0 round 16px);
+  }
+}
+
+.hero-copy > *:nth-child(1),
+.cta-inner > *:nth-child(1) {
+  --i: 0;
+}
+.hero-copy > *:nth-child(2),
+.cta-inner > *:nth-child(2) {
+  --i: 1;
+}
+.hero-copy > *:nth-child(3),
+.cta-inner > *:nth-child(3) {
+  --i: 2;
+}
+.hero-copy > *:nth-child(4),
+.cta-inner > *:nth-child(4) {
+  --i: 3;
+}
+
+.hero-section[data-reveal="pending"] .hero-copy > *,
+.hero-section[data-reveal="pending"] .hero-media,
+.cta-section[data-reveal="pending"] .cta-inner > * {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-section[data-reveal="in"] .hero-copy > *,
+  .cta-section[data-reveal="in"] .cta-inner > * {
+    animation: rise-in 700ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+    animation-delay: calc(var(--i, 0) * 90ms);
+  }
+  .hero-section[data-reveal="in"] .hero-media {
+    animation: hero-wipe 900ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+    animation-delay: 160ms;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-section[data-reveal="in"] .hero-copy > *,
+  .hero-section[data-reveal="in"] .hero-media,
+  .cta-section[data-reveal="in"] .cta-inner > * {
+    animation: feat-fade 320ms ease-out backwards;
+    animation-delay: calc(var(--i, 0) * 60ms);
+  }
+}

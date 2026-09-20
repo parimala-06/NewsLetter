@@ -31,7 +31,10 @@ export default function RootLayout({ children }) {
       {/* Same reasoning here for <body> — browser extensions like Grammarly
           inject their own attributes (data-gr-ext-installed, etc.) before
           hydration, which is likewise a false-positive mismatch. */}
-      <body suppressHydrationWarning>{children}</body>
+      <body suppressHydrationWarning>{children}{/* impeccable-live-start */}
+<script src="http://localhost:8400/live.js?token=ae22a099-9267-406d-9501-91b4f9fe737d"></script>
+{/* impeccable-live-end */}
+</body>
     </html>
   );
 }

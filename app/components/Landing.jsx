@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import MastHead from "@/app/components/MastHead";
 import ThemeToggle from "@/app/components/ThemeToggle";
+import RevealSection from "@/app/components/RevealSection";
 
 const FEATURES = [
   {
@@ -81,9 +82,9 @@ export default function Landing() {
         }
       />
 
-      <section className="ink-band">
+      <RevealSection initial="in" className="hero-section ink-band">
         <div className="max-w-6xl mx-auto px-6 pt-16 pb-20 md:pt-24 md:pb-28 grid md:grid-cols-2 gap-12 items-center">
-          <div>
+          <div className="hero-copy">
             <p className="font-sans text-xs font-semibold uppercase tracking-[0.15em] text-[var(--accent)] mb-5">
               Read less. Know more.
             </p>
@@ -101,7 +102,7 @@ export default function Landing() {
             </Link>
           </div>
 
-          <figure className="rounded-2xl overflow-hidden">
+          <figure className="hero-media rounded-2xl overflow-hidden">
             <picture>
               <source srcSet="/hero/newsroom-hero.webp" type="image/webp" />
               <img
@@ -115,11 +116,11 @@ export default function Landing() {
             </figcaption>
           </figure>
         </div>
-      </section>
+      </RevealSection>
 
-      <section id="features" className="bg-[var(--bg-panel)]">
+      <RevealSection id="features" className="feat-section bg-[var(--bg-panel)]">
         <div className="max-w-6xl mx-auto px-6 py-16 md:py-20">
-          <div className="max-w-2xl mb-10">
+          <div className="feat-intro max-w-2xl mb-10">
             <h2 className="font-display text-2xl md:text-3xl font-semibold text-[var(--text-100)] mb-3">
               Your briefing, not a newspaper
             </h2>
@@ -129,11 +130,11 @@ export default function Landing() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {FEATURES.map((f) => (
-              <div key={f.title} className="card rounded-2xl p-6">
+          <div className="feat-grid grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {FEATURES.map((f, i) => (
+              <div key={f.title} className="feat-card card rounded-2xl p-6" style={{ "--i": i }}>
                 <div
-                  className="w-11 h-11 rounded-xl flex items-center justify-center mb-5"
+                  className="feat-icon w-11 h-11 rounded-xl flex items-center justify-center mb-5"
                   style={{ backgroundColor: f.color }}
                 >
                   <f.icon size={20} color="#fffdf9" />
@@ -148,9 +149,9 @@ export default function Landing() {
             ))}
           </div>
         </div>
-      </section>
+      </RevealSection>
 
-      <section id="how-it-works" className="max-w-5xl mx-auto px-6 py-16 md:py-20 text-center">
+      <RevealSection id="how-it-works" className="steps-section max-w-5xl mx-auto px-6 py-16 md:py-20 text-center">
         <p className="font-sans text-xs font-semibold uppercase tracking-[0.15em] text-[var(--accent)] mb-3">
           A quick word on how it works
         </p>
@@ -161,28 +162,43 @@ export default function Landing() {
           For each topic you follow, it does this — automatically.
         </p>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 text-left">
+        <div className="zz grid gap-10 text-left" role="list" style={{ "--node": "44px" }}>
           {STEPS.map((s, i) => (
-            <div key={s.title}>
-              <div className="flex items-center gap-3 mb-3">
-                <span className="flex items-center justify-center w-9 h-9 rounded-full border border-[var(--border)] text-sm font-sans font-semibold text-[var(--text-60)]">
-                  {i + 1}
-                </span>
-                <s.icon size={18} className="text-[var(--olive)]" />
+            <div
+              key={s.title}
+              className="zz-step relative grid items-start pl-16 lg:pl-0 lg:grid-cols-[1fr_auto_1fr] lg:gap-x-8"
+              role="listitem"
+              style={{ "--i": i }}
+            >
+              <span className="zz-node absolute left-0 top-0 lg:static lg:col-start-2 lg:row-start-1 flex items-center justify-center w-11 h-11 rounded-full font-display text-lg font-semibold">
+                {i + 1}
+              </span>
+              <div
+                className={
+                  "zz-side pt-1.5 lg:row-start-1 " +
+                  (i % 2 === 0 ? "lg:col-start-1 lg:text-right" : "lg:col-start-3 lg:text-left")
+                }
+              >
+                <h3
+                  className={
+                    "flex items-center gap-2 font-display text-base font-semibold text-[var(--text-100)] mb-1.5 " +
+                    (i % 2 === 0 ? "lg:flex-row-reverse" : "")
+                  }
+                >
+                  <s.icon size={18} className="text-[var(--olive)]" />
+                  {s.title}
+                </h3>
+                <p className="text-sm text-[var(--text-60)] leading-relaxed">
+                  {s.body}
+                </p>
               </div>
-              <h3 className="font-display text-base font-semibold text-[var(--text-100)] mb-1.5">
-                {s.title}
-              </h3>
-              <p className="text-sm text-[var(--text-60)] leading-relaxed">
-                {s.body}
-              </p>
             </div>
           ))}
         </div>
-      </section>
+      </RevealSection>
 
-      <section className="ink-band">
-        <div className="max-w-3xl mx-auto px-6 py-16 md:py-20 text-center">
+      <RevealSection className="cta-section ink-band">
+        <div className="cta-inner max-w-3xl mx-auto px-6 py-16 md:py-20 text-center">
           <h2 className="font-display text-3xl md:text-4xl font-semibold mb-4">
             Stop scrolling. Start your briefing.
           </h2>
@@ -195,7 +211,7 @@ export default function Landing() {
             <ArrowUpRight size={17} />
           </Link>
         </div>
-      </section>
+      </RevealSection>
 
       <footer className="ink-band border-t border-[rgba(246,241,231,0.1)]">
         <div className="max-w-6xl mx-auto px-6 py-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
