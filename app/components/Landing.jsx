@@ -88,7 +88,7 @@ export default function Landing() {
               Read less. Know more.
             </p>
             <h1 className="font-display text-4xl md:text-6xl font-semibold leading-[1.08] tracking-tight mb-6">
-              Your news, briefed — not buried.
+              The news that matters, in minutes.
             </h1>
             <p className="text-lg text-[rgba(243,239,228,0.75)] leading-relaxed mb-8 max-w-md">
               Follow the topics you actually care about and get a short,

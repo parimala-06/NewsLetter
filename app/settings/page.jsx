@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { ArrowUp, ArrowDown, ArrowLeft, X, Check, ArrowUpRight } from "lucide-react";
+import { ArrowUp, ArrowDown, ArrowLeft, X, Check, ArrowUpRight, Loader2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { CATEGORIES, categoryAccent } from "@/lib/theme";
 import MastHead from "@/app/components/MastHead";
@@ -148,23 +148,35 @@ export default function Settings() {
             Categories
           </h2>
           <div className="flex flex-wrap gap-2">
-            {CATEGORIES.map((cat) => {
-              const active = isFollowed(cat, true);
-              const busy = pending === keyOf(cat, true);
-              return (
-                <button
-                  key={cat}
-                  onClick={() => toggleCategory(cat)}
-                  disabled={busy || loadingTopics}
-                  className={`tag-pill px-4 py-2 rounded-full inline-flex items-center gap-1.5 disabled:opacity-50 ${
-                    active ? "is-active" : ""
-                  }`}
-                >
-                  {active && <Check size={13} />}
-                  {cat}
-                </button>
-              );
-            })}
+            {loadingTopics
+              ? Array.from({ length: 6 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="glass-skeleton rounded-full animate-pulse"
+                    style={{ width: 76 + (i % 3) * 22, height: "2.25rem" }}
+                  />
+                ))
+              : CATEGORIES.map((cat) => {
+                  const active = isFollowed(cat, true);
+                  const busy = pending === keyOf(cat, true);
+                  return (
+                    <button
+                      key={cat}
+                      onClick={() => toggleCategory(cat)}
+                      disabled={busy}
+                      className={`tag-pill px-4 py-2 rounded-full inline-flex items-center gap-1.5 disabled:opacity-70 ${
+                        active ? "is-active" : ""
+                      }`}
+                    >
+                      {busy ? (
+                        <Loader2 size={13} className="animate-spin" />
+                      ) : (
+                        active && <Check size={13} />
+                      )}
+                      {cat}
+                    </button>
+                  );
+                })}
           </div>
         </section>
 
@@ -184,26 +196,39 @@ export default function Settings() {
             </button>
           </form>
 
-          {customTopics.length === 0 ? (
+          {loadingTopics ? (
+            <div className="flex flex-wrap gap-2">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="glass-skeleton rounded-full animate-pulse"
+                  style={{ width: 90 + (i % 2) * 30, height: "2.25rem" }}
+                />
+              ))}
+            </div>
+          ) : customTopics.length === 0 ? (
             <p className="text-[var(--text-60)] text-sm">No custom topics yet — add one above.</p>
           ) : (
             <div className="flex flex-wrap gap-2">
-              {customTopics.map((t) => (
-                <span
-                  key={t.topic}
-                  className="tag-pill flex items-center gap-2 pl-4 pr-2.5 py-2 rounded-full"
-                >
-                  {t.topic}
-                  <button
-                    onClick={() => unfollow(t.topic, false)}
-                    disabled={pending === keyOf(t.topic, false)}
-                    className="text-[var(--text-40)] hover:text-[var(--error-text)] disabled:opacity-50"
-                    aria-label={`Remove ${t.topic}`}
+              {customTopics.map((t) => {
+                const busy = pending === keyOf(t.topic, false);
+                return (
+                  <span
+                    key={t.topic}
+                    className="tag-pill flex items-center gap-2 pl-4 pr-2.5 py-2 rounded-full"
                   >
-                    <X size={14} />
-                  </button>
-                </span>
-              ))}
+                    {t.topic}
+                    <button
+                      onClick={() => unfollow(t.topic, false)}
+                      disabled={busy}
+                      className="text-[var(--text-40)] hover:text-[var(--error-text)] disabled:opacity-50"
+                      aria-label={`Remove ${t.topic}`}
+                    >
+                      {busy ? <Loader2 size={14} className="animate-spin" /> : <X size={14} />}
+                    </button>
+                  </span>
+                );
+              })}
             </div>
           )}
         </section>
@@ -212,7 +237,13 @@ export default function Settings() {
           <h2 className="font-sans text-xs font-semibold uppercase tracking-widest text-[var(--text-100)] mb-3">
             Order your topics
           </h2>
-          {topics.length === 0 ? (
+          {loadingTopics ? (
+            <div className="space-y-2">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="glass-skeleton rounded-xl h-11 animate-pulse" />
+              ))}
+            </div>
+          ) : topics.length === 0 ? (
             <p className="text-[var(--text-60)] text-sm">
               Follow a topic above to set the order it appears on your dashboard.
             </p>

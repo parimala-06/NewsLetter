@@ -48,10 +48,12 @@ export default function TopicDigestCard({
 
       {loading && (
         <div>
-          <p className="font-sans text-xs text-[var(--text-50)] flex items-center gap-2 mb-4">
-            <Loader2 size={12} className="animate-spin text-[var(--accent)]" />
-            {trace?.length ? trace[trace.length - 1] : "Agent is warming up…"}
-          </p>
+          <div className="status-glass mb-5">
+            <Loader2 size={15} className="animate-spin text-[var(--accent)] shrink-0" />
+            <span className="status-glass-text">
+              {trace?.length ? trace[trace.length - 1] : "Agent is warming up…"}
+            </span>
+          </div>
           <DigestSkeleton compact />
         </div>
       )}

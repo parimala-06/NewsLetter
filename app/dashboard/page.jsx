@@ -154,9 +154,13 @@ export default function Dashboard() {
             <Link href="/settings" className="md:hidden btn btn-outline px-3 py-2" aria-label="Settings">
               <SettingsIcon size={16} />
             </Link>
-            <button onClick={handleSignOut} className="btn btn-outline">
+            <button
+              onClick={handleSignOut}
+              className="btn btn-outline px-3 py-2 md:px-[1.4rem] md:py-[0.7rem]"
+              aria-label="Sign out"
+            >
               <LogOut size={15} />
-              Sign out
+              <span className="hidden md:inline">Sign out</span>
             </button>
           </>
         }

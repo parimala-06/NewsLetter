@@ -55,6 +55,9 @@
   --error-bg: rgba(180, 55, 40, 0.08);
   --error-border: rgba(180, 55, 40, 0.25);
   --error-text: #8a3020;
+
+  --glass-bg: rgba(255, 253, 249, 0.6);
+  --glass-border: rgba(32, 29, 22, 0.1);
 }
 
 :root[data-theme="dark"] {
@@ -100,6 +103,9 @@
   --error-bg: rgba(224, 100, 80, 0.12);
   --error-border: rgba(224, 100, 80, 0.3);
   --error-text: #f0a08e;
+
+  --glass-bg: rgba(32, 30, 23, 0.55);
+  --glass-border: rgba(243, 239, 228, 0.12);
 }
 
 body {
@@ -204,6 +210,49 @@ body {
 .btn-outline:hover {
   border-color: var(--text-60);
   background-color: var(--surface-soft);
+}
+
+/* On small screens the masthead has less room to spare — shrink its
+   buttons (sign in, sign out, the settings icon-link) so they sit
+   comfortably next to the wordmark instead of dominating the bar. */
+@media (max-width: 640px) {
+  .masthead .btn {
+    padding: 0.5rem 0.85rem;
+    font-size: 0.78rem;
+    gap: 0.35rem;
+  }
+}
+
+/* Frosted status banner for in-flight agent work (searching, sourcing
+   photos, checking originality/relevance) and frosted skeleton
+   placeholders for pending topic toggles — kept legible over any
+   underlying content in both themes, unlike a flat/disabled block. */
+.status-glass {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background-color: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 14px;
+  padding: 0.7rem 1rem;
+  box-shadow: var(--card-shadow);
+}
+
+.status-glass-text {
+  font-family: "Work Sans", ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-85);
+  line-height: 1.4;
+}
+
+.glass-skeleton {
+  background-color: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 /* Filter/tag pills — small, quiet, olive when active. Matches the sage

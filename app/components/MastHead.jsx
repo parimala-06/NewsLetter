@@ -8,8 +8,8 @@ import Link from "next/link";
 export default function MastHead({ links = [], active, actions }) {
   return (
     <header className="masthead sticky top-0 z-30">
-      <div className="max-w-6xl mx-auto px-6 h-16 flex items-center gap-8">
-        <Link href="/" className="font-display text-xl font-semibold tracking-tight text-[var(--text-100)] shrink-0">
+      <div className="max-w-6xl mx-auto px-4 md:px-6 h-16 flex items-center gap-3 md:gap-8">
+        <Link href="/" className="font-display text-base md:text-xl font-semibold tracking-tight text-[var(--text-100)] shrink-0 truncate">
           The AI Briefing
         </Link>
 
@@ -27,7 +27,7 @@ export default function MastHead({ links = [], active, actions }) {
           </nav>
         )}
 
-        <div className="ml-auto flex items-center gap-3">{actions}</div>
+        <div className="ml-auto flex items-center gap-1.5 md:gap-3 shrink-0">{actions}</div>
       </div>
     </header>
   );
