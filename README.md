@@ -5,7 +5,29 @@ model autonomously decides how many searches to run, when to broaden scope,
 which stories to publish, and whether its own draft passes a relevance/
 originality check — before any output reaches the user.
 
-![Dashboard — a synthesized topic digest with live headlines, sourced photos, and "new since last visit" badges](docs/screenshots/dashboard.jpg)
+![Landing page — hero, feature grid, and the agent's four-step process, in dark mode](docs/screenshots/landing-dark.png)
+
+## What it looks like
+
+The marketing site (`app/components/Landing.jsx`) sells the same agent
+loop described below in plain language, not implementation terms — the
+four feature cards map onto real product behavior (follow categories or
+free-text topics, reorder them, regenerate on demand, one summary + photo
+per story), and the "how it works" strip is a user-facing translation of
+the tool-calling loop in the [Agent architecture](#agent-architecture)
+section, including the self-critique turn ("It double-checks itself").
+
+| Light | Dark |
+|---|---|
+| ![Landing page, light theme](docs/screenshots/landing-light.png) | ![Landing page, dark theme](docs/screenshots/landing-dark.png) |
+
+Theming is entirely CSS-variable driven (`app/globals.css`, `data-theme`
+attribute on `<html>`) — every screen below renders correctly in both
+themes and at mobile width without component-level branching.
+
+![Landing page on mobile — responsive down to 390px, no horizontal overflow](docs/screenshots/landing-mobile.png)
+
+![Sign-in — Google OAuth is the only auth method](docs/screenshots/signin.png)
 
 ## Problem statement
 
@@ -76,6 +98,13 @@ flowchart TD
 
 ## Data flow and persistence
 
+![Dashboard — a synthesized topic digest with live headlines and sourced photos, one card per followed topic](docs/screenshots/dashboard.png)
+
+First run, before any topic is followed, is a single explicit CTA rather
+than an empty grid:
+
+![Dashboard zero-state — no topics followed yet, with a direct link into Settings](docs/screenshots/dashboard-empty.png)
+
 - Auth + row-level data isolation via Supabase (`@supabase/ssr`); Google
   OAuth handled entirely by Supabase's server-side exchange, not app code.
 - `bookmarks` table drives what the dashboard renders — followed
@@ -83,12 +112,12 @@ flowchart TD
   (`app/api/bookmarks/route.js`).
 - `digest_history` stores the last generated digest per `(user, topic)`.
   Each new run is diffed against it by story URL; unseen URLs are flagged
-  `isNew` and rendered as a badge — see the `dashboard.jpg` screenshot
-  above for a followed topic mid-diff.
+  `isNew` and rendered as a badge — see the screenshot above for a
+  followed topic mid-diff.
 - RLS policies scope every row to `auth.uid()` — enforced at the database
   layer, independent of any app-layer check (`supabase/schema.sql`).
 
-![Settings — category/topic follow state and drag-free up/down topic ordering, both persisted per user](docs/screenshots/settings.jpg)
+![Settings — category/topic follow state and drag-free up/down topic ordering, both persisted per user](docs/screenshots/settings.png)
 
 ## Stack
 
